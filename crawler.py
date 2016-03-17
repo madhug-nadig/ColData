@@ -3,7 +3,6 @@ from urllib.request import Request, urlopen
 from bs4 import BeautifulSoup
 import re
 
-
 def get_url(query):
         if " " not in query:
                 query = "http://duckduckgo.com/html/?q=" + query
@@ -23,26 +22,49 @@ def get_links(query):
                 the_links.append(links.a['href'])
         return the_links
 
-def file_write(op, i):
-        i = str(i) + ".txt"
-        file = open(i, "w", encoding='utf-8')
+def file_write(qry,u ,op, i):
+        i =  qry+ ".txt"
+        file = open(i, "a", encoding='utf-8')
+        file.write('\nData from: ' + u + '\n \n')
         file.write(op)
+        file.write('\n \n')
         file.close()
 
-def get_data(u, i):
-        op = ""
-        theurl = Request(u, headers = {'User-Agent': 'Mozilla/5.0'})
-        html=urllib.request.urlopen(theurl)
-        data = html.read().decode('utf-8', 'ignore');
-        soup=BeautifulSoup(data)
-        res = [i.text.replace('\n', ' ').strip() for i in soup.find_all('p')]
-        for p in res:
-                op = op + p + '\n'
-        file_write(op, i)
+def get_data(qry,u, i):
+		print("getting data for " + qry)
+		op = ""
+		try:
+			theurl = Request(u, headers = {'User-agent' : 'Mozilla/5.0 (Windows; U; Windows NT 5.1; de; rv:1.9.1.5) Gecko/20091102 Firefox/3.5.5', 'Accept': 'text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8' })
+			html=urllib.request.urlopen(theurl)
+			data = html.read().decode('utf-8', 'ignore')
+			soup=BeautifulSoup(data, 'html.parser')
+			res = [i.text.replace('\n', ' ').strip() for i in soup.find_all('p')]
+			for p in res:
+					op = op + p + '\n'
+			file_write(qry, u,op, i)
+		except:
+			print("HTTP exception (Most probable)")
 
-query = "Matheran"
-url = get_links(query)
-#get_data(url[0])
+def get_queries():
+        try:
+            f = open('places.txt', 'r')
+            qs = f.readlines()
+            f.close()
+            qs = list(map(lambda s: s.strip(), qs))
+            print(qs)
+            return qs
+        except IOError as e:
+            print("\nPlease choose the correct path! ")
 
-for i in range(8):
-    get_data(url[i], i)
+def main():
+	queries = get_queries()
+	if queries:
+		for iter in range(len(queries)):
+				query = queries[iter]
+				url = get_links(query)
+				
+				for i in range(8):
+					if i< len(url):
+						get_data(query, url[i], i)
+
+if __name__ == "__main__":main()
