@@ -4,12 +4,9 @@ from bs4 import BeautifulSoup
 import re
 
 def get_url(query):
-        if " " not in query:
-                query = "http://duckduckgo.com/html/?q=" + query
-        else:
-                qarr = query.split()
-                q = [x for x in qarr]
-                query = "http://duckduckgo.com/html/?q=" + '+'.join(q)
+        qarr = query.split()
+        q = [x for x in qarr]
+        query = "http://duckduckgo.com/html/?q=" + '+'.join(q)
         return query
 
 def get_links(query):
