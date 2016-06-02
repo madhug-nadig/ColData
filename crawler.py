@@ -44,14 +44,14 @@ def get_data(qry,u, i):
 
 def get_queries():
         try:
-            f = open('places.txt', 'r')
+            f = open('query.txt', 'r')
             qs = f.readlines()
             f.close()
             qs = list(map(lambda s: s.strip(), qs))
             print(qs)
             return qs
         except IOError as e:
-            print("\nPlease choose the correct path! ")
+            print("\nPlease choose the correct path for query.txt! ")
 
 def main():
 	queries = get_queries()
