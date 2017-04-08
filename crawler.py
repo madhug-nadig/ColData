@@ -1,4 +1,5 @@
 import urllib.request
+from urllib import parse
 from urllib.request import Request, urlopen
 from bs4 import BeautifulSoup
 import re
@@ -28,7 +29,12 @@ def file_write(qry,u ,op, i):
         file.close()
 
 def get_data(qry,u, i):
-		print("getting data for " + qry)
+		if u[28] == 'F':
+			u = "https://" + u[29:]
+		else:
+			u = "http://" + u[28:]
+		u=parse.unquote(u)
+		print(u)
 		op = ""
 		try:
 			theurl = Request(u, headers = {'User-agent' : 'Mozilla/5.0 (Windows; U; Windows NT 5.1; de; rv:1.9.1.5) Gecko/20091102 Firefox/3.5.5', 'Accept': 'text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8' })
@@ -39,8 +45,8 @@ def get_data(qry,u, i):
 			for p in res:
 					op = op + p + '\n'
 			file_write(qry, u,op, i)
-		except:
-			print("HTTP exception (Most probable)")
+		except Exception as e:
+			print("Execption: ", e)
 
 def get_queries():
         try:
